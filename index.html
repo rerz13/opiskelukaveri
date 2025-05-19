@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Opiskelukaveri</title>
+
+  <!-- Tyylitiedosto -->
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- FullCalendar (kalenterikirjasto) -->
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales-all.min.js"></script>
+
+  <!-- Firebase (sisäänkirjautuminen) -->
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/ui/6.0.2/firebase-ui-auth.js"></script>
+  <link rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/6.0.2/firebase-ui-auth.css" />
+</head>
+<body>
+  <!-- Teeman vaihtopainikkeet -->
+  <div class="theme-toggle">
+    <button id="light-mode">☀</button>
+    <button id="dark-mode">🌙</button>
+  </div>
+
+  <!-- Sisäänkirjautumisalue -->
+  <div id="login-area" style="margin-bottom: 20px;"></div>
+
+  <!-- Sivun yläosa -->
+  <header>
+    <h1>Opiskelukaveri</h1>
+    <div class="language-switcher">
+      <button id="fi">FI</button>
+      <button id="en">EN</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Kalenteriosio -->
+    <section class="calendar-section">
+      <h2 data-translate="calendar">Kalenteri</h2>
+      <div id="calendar"></div>
+    </section>
+
+    <!-- Tehtävät-osio -->
+    <section class="todo-section">
+      <h2 data-translate="tasks">Tehtävät</h2>
+      <form id="todo-form">
+        <input type="text" id="todo-input" placeholder="Lisää uusi tehtävä..." required>
+        <input type="date" id="todo-date">
+        <button type="submit" data-translate="add">Lisää</button>
+      </form>
+      <ul id="todo-list"></ul>
+    </section>
+
+    <!-- Materiaalit-osio -->
+    <section class="materials-section">
+      <h2 data-translate="materials">Materiaalit</h2>
+      <form id="material-form">
+        <input type="text" id="material-title" placeholder="Materiaalin otsikko..." required>
+        <input type="url" id="material-link" placeholder="Linkki (jos saatavilla)">
+        <textarea id="material-notes" placeholder="Muistiinpanot..."></textarea>
+        <button type="submit" data-translate="add-material">Lisää materiaali</button>
+      </form>
+      <div id="materials-list"></div>
+    </section>
+  </main>
+
+  <!-- Sivun alatunniste -->
+  <footer>
+    <p data-translate="footer">Opiskelukaveri – Sinun opiskeluaikasi apuri</p>
+  </footer>
+
+  <!-- JavaScript-tiedosto -->
+  <script src="script.js"></script>
+</body>
+</html>

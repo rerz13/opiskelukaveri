@@ -1,0 +1,208 @@
+:root {
+  --primary-color: #2c3e50;
+  --secondary-color: #3498db;
+  --accent-color: #e74c3c;
+  --light-color: #ecf0f1;
+  --dark-color: #2c3e50;
+}
+
+/* Perustyyli kaikille elementeille */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: var(--light-color);
+  color: var(--dark-color);
+  padding: 20px;
+}
+
+body.dark {
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+/* Ylätunniste */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--secondary-color);
+}
+
+h1, h2 {
+  color: var(--primary-color);
+}
+
+.language-switcher button {
+  margin-left: 10px;
+  padding: 6px 12px;
+  background-color: var(--secondary-color);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+main {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 30px;
+}
+
+/* Kalenterin tausta ja blur */
+.calendar-section {
+  background-image: url('https://cdn.pixabay.com/photo/2017/03/20/10/58/books-2158773_1280.jpg');
+  background-size: cover;
+  background-position: center;
+  border-radius: 12px;
+  padding: 20px;
+  position: relative;
+}
+
+.calendar-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: rgba(255,255,255,0.65);
+  backdrop-filter: blur(5px);
+  border-radius: 12px;
+  z-index: 0;
+}
+
+.calendar-section > * {
+  position: relative;
+  z-index: 1;
+}
+
+#calendar {
+  background: white;
+  border-radius: 12px;
+  padding: 10px;
+}
+
+body.dark #calendar {
+  background: #2a2a2a;
+}
+
+/* Teeman vaihtopainikkeet */
+.theme-toggle {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  gap: 5px;
+}
+
+.theme-toggle button {
+  background: var(--secondary-color);
+  border: none;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Lomakkeet ja tehtävälista */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+input, textarea, button {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+button {
+  background-color: var(--secondary-color);
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: var(--primary-color);
+}
+
+#todo-list {
+  list-style: none;
+}
+
+#todo-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+#todo-list li.completed {
+  text-decoration: line-through;
+  color: #888;
+}
+
+/* Materiaalilista */
+#materials-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 15px;
+}
+
+.material-item {
+  padding: 15px;
+  border: 1px solid #eee;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.material-item h3 {
+  margin-bottom: 10px;
+  color: var(--primary-color);
+}
+
+/* Alatunniste */
+footer {
+  margin-top: 30px;
+  text-align: center;
+  padding: 15px;
+  border-top: 2px solid var(--secondary-color);
+}
+
+/* Responsiivisuus */
+@media (min-width: 768px) {
+  main {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .calendar-section {
+    grid-column: span 2;
+  }
+
+  #materials-list {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (min-width: 1024px) {
+  main {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .calendar-section {
+    grid-column: span 3;
+  }
+
+  #materials-list {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
