@@ -57,7 +57,7 @@ main {
 
 /* Kalenterin tausta ja blur */
 .calendar-section {
-  background-image: url('https://cdn.pixabay.com/photo/2017/03/20/10/58/books-2158773_1280.jpg');
+  background-image: url('https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&w=2073&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
   background-size: cover;
   background-position: center;
   border-radius: 12px;
@@ -81,9 +81,11 @@ main {
 }
 
 #calendar {
-  background: white;
+  background: url('https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&w=2073&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
   border-radius: 12px;
   padding: 10px;
+  max-height: 600px; 
+  overflow-y: auto;
 }
 
 body.dark #calendar {
@@ -197,6 +199,7 @@ footer {
   main {
     grid-template-columns: 1fr 1fr 1fr;
   }
+  
 
   .calendar-section {
     grid-column: span 3;
@@ -206,3 +209,4 @@ footer {
     grid-template-columns: 1fr 1fr 1fr;
   }
 }
+
