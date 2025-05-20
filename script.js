@@ -1,4 +1,4 @@
-// 🔐 Firebase-konfiguraatio (sisäänkirjautuminen Google/Email)
+//  Firebase-konfiguraatio (sisäänkirjautuminen Google/Email)
 const firebaseConfig = {
   apiKey: "AIzaSyAe5ZTG3JEUqQr3QYhd4sEqFsfWyOHaN_A",
   authDomain: "opiskelukaveri-34de5.firebaseapp.com",
@@ -11,7 +11,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const ui = new firebaseui.auth.AuthUI(firebase.auth());
 
-// 🔒 Näytetään sisäänkirjautumisalue tai käyttäjän tiedot
+// Näytetään sisäänkirjautumisalue tai käyttäjän tiedot
 firebase.auth().onAuthStateChanged(user => {
   const loginArea = document.getElementById("login-area");
   if (user) {
@@ -27,7 +27,7 @@ firebase.auth().onAuthStateChanged(user => {
   }
 });
 
-// 📅 Kalenterin luonti FullCalendarilla
+//  Kalenterin luonti FullCalendarilla
 let calendar;
 function initCalendar(locale = 'fi') {
   const calendarEl = document.getElementById('calendar');
@@ -59,7 +59,7 @@ document.getElementById("dark-mode").addEventListener("click", () => {
   document.body.classList.add("dark");
 });
 
-// 🌐 Kielen vaihtaminen (FI / EN)
+//  Kielen vaihtaminen (FI / EN)
 document.getElementById("fi").addEventListener("click", () => {
   changeLanguage("fi");
   initCalendar("fi");
@@ -69,7 +69,7 @@ document.getElementById("en").addEventListener("click", () => {
   initCalendar("en");
 });
 
-// 🌍 Tekstien käännökset
+//  Tekstien käännökset
 function changeLanguage(lang) {
   const translations = {
     fi: {
@@ -107,7 +107,7 @@ function changeLanguage(lang) {
   }
 }
 
-// ✅ Tehtävien lisääminen
+// Tehtävien lisääminen
 document.getElementById('todo-form').addEventListener('submit', function(e) {
   e.preventDefault();
   const input = document.getElementById('todo-input');
@@ -126,7 +126,7 @@ document.getElementById('todo-form').addEventListener('submit', function(e) {
   initCalendar(); // päivitää kalenterin
 });
 
-// ✅ Näytä tallennetut tehtävät
+// Näytä tallennetut tehtävät
 function loadTodos() {
   const todos = JSON.parse(localStorage.getItem("todos") || "[]");
   const list = document.getElementById("todo-list");
@@ -139,7 +139,7 @@ function loadTodos() {
   });
 }
 
-// ✅ Alustetaan kun sivu latautuu
+//  Alustetaan kun sivu latautuu
 document.addEventListener("DOMContentLoaded", () => {
   initCalendar("fi");
   loadTodos();
