@@ -18,6 +18,8 @@ body {
   background-color: var(--light-color);
   color: var(--dark-color);
   padding: 20px;
+  max-width: 100vw;
+  overflow-x: hidden;
 }
 
 body.dark {
