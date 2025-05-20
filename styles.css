@@ -212,4 +212,21 @@ footer {
     grid-template-columns: 1fr 1fr 1fr;
   }
 }
+@media (max-width: 500px) {
+  main {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  .theme-toggle {
+    flex-direction: column;
+    top: 5px;
+    right: 5px;
+  }
+  h1 {
+    font-size: 1.5rem;
+  }
+  h2 {
+    font-size: 1.2rem;
+  }
+}
 
