@@ -15,7 +15,8 @@ const ui = new firebaseui.auth.AuthUI(firebase.auth());
 firebase.auth().onAuthStateChanged(user => {
   const loginArea = document.getElementById("login-area");
   if (user) {
-    loginArea.innerHTML = `<p>Tervetuloa, ${user.displayName} (${user.email})</p><button onclick="firebase.auth().signOut()">Kirjaudu ulos</button>`;
+    loginArea.innerHTML = `<p>Tervetuloa, ${user.displayName} (${user.email})</p>
+   <button onclick="firebase.auth().signOut()">Kirjaudu ulos</button>`;
   } else {
     ui.start("#login-area", {
       signInOptions: [
@@ -106,7 +107,7 @@ function changeLanguage(lang) {
     document.getElementById('material-title').placeholder = 'Material title...';
     document.getElementById('material-notes').placeholder = 'Notes...';
   }
-  
+
   loadTodos(); // Päivitä tehtävälista kielen vaihtuessa
 }
 
@@ -250,4 +251,75 @@ document.addEventListener("DOMContentLoaded", () => {
   loadTodos();
   checkDeadlines();
   setInterval(checkDeadlines, 3600000); // Tarkistaa deadlinet tunnin välein
+  startMotivationToasts();            // Käynnistää motivaatiotoastit
 });
+
+// Motivaatiolainaukset
+// Lainausmatriisit suomeksi ja englanniksi
+const motivationQuotes = {
+  fi: [
+    "Muisti on voimakas. Käytä sitä.",
+    "Jos odotamme kunnes olemme valmiita, odotamme koko elämämme.",
+    "Ei ole koskaan liian myöhäistä olla se, mikä voisi olla.",
+    "Älä lopeta ennen kuin olet ylpeä.",
+    "Joki kuluttaa kiven ei voimallaan vaan sinnikkyydellään.",
+    "Miehenä vuoren huipulla ei pudonnut sinne.",
+    "Ero tavallisen ja erityisen välillä on se pieni ylimääräinen.",
+    "Älä koskaan anna pienten mielien vakuuttaa sinua, että unelmasi ovat liian suuria.",
+    "Ihmiset, jotka ovat tarpeeksi hulluja uskomaan, että he voivat muuttaa maailman, ovat niitä, jotka tekevät sen. — Steve Jobs",
+    "Monet elämän epäonnistumiset ovat ihmisiä, jotka eivät tajunneet kuinka lähellä menestystä olivat, kun he luovuttivat. — Thomas Edison",
+    "Sinun ei tarvitse olla loistava aloittaaksesi. Mutta sinun on aloitettava ollaksesi loistava.",
+    "Menestys ei ole lopullinen, epäonnistuminen ei ole kohtalokas; sillä rohkeus jatkaa on se, mikä merkitsee. — Winston Churchill",
+    "Koulutus on mahtavin ase, jolla voit muuttaa maailmaa. — Nelson Mandela",
+    "Voittajat epäonnistuvat uudestaan ja uudestaan, kunnes he onnistuvat."
+  ],
+  en: [
+    "Memory is powerful. Use it.",
+    "If we wait until we’re ready, we’ll be waiting for the rest of our lives.",
+    "It’s never too late to be what you might have been.",
+    "Don’t stop until you’re proud.",
+    "A river cuts through rock not because of its power but because of its persistence.",
+    "Success is not final, failure is not fatal; it is the courage to continue that counts. — Winston Churchill",
+    "Education is the most powerful weapon which you can use to change the world. — Nelson Mandela",
+    "Don’t stop until you’re proud.",
+    "Winners will fail over and over again until they succeed.",
+    "The man on top of the mountain didn’t fall there.",
+    "The difference between ordinary and extraordinary is that little extra.",
+    "Never let small minds convince you that your dreams are too big.",
+    "The people who are crazy enough to believe they can change the world are the ones who do. — Steve Jobs"
+  ]
+};
+
+// Luo motivaatiotoast-elementti ja lisää DOM:iin
+const toast = document.createElement('div');
+toast.id = 'motivational-toast';
+document.body.appendChild(toast);
+
+// Käynnistä motivaatiotoast-toiminto
+function startMotivationToasts() {
+  showMotivationalToast();              // näytä heti ensimmäinen
+  setInterval(showMotivationalToast, 30 * 60 * 1000); // 30 min välein
+}
+
+// Näyttää motivaatiolainauksen oikealla kielellä, satunnaisvärillä
+function showMotivationalToast() {
+  const lang = document.documentElement.lang === "en" ? "en" : "fi";
+  const quotes = motivationQuotes[lang];
+  const quote = quotes[Math.floor(Math.random() * quotes.length)];
+
+  // Määritä satunnainen taustaväri toastille
+  const colors = [
+    "#2c3e50", "#8e44ad", "#16a085", "#2980b9",
+    "#d35400", "#c0392b", "#27ae60", "#34495e",
+    "#7f8c8d", "#f39c12"
+  ];
+  const bg = colors[Math.floor(Math.random() * colors.length)];
+
+  toast.textContent = quote;
+  toast.style.backgroundColor = bg;
+  toast.style.color = "#fff";
+  toast.classList.add('visible');
+
+  // Poista näkyvyys 10 sekunnin kuluttua
+  setTimeout(() => toast.classList.remove('visible'), 10000);
+}
