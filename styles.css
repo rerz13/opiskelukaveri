@@ -23,7 +23,7 @@ body {
 }
 
 body.dark {
-  background-color: #121212;
+  background-color: #17142b;
   color: #e0e0e0;
 }
 
@@ -61,10 +61,14 @@ main {
 .calendar-section {
   background-image: url('https://images.unsplash.com/photo-1588420343618-6141b3784bce?q=80&w=2012&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
   background-size: cover;
+  background-repeat: no-repeat;
   background-position: center;
-  border-radius: 12px;
   padding: 20px;
+  border-radius: 12px;
   position: relative;
+  min-height: 400px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .calendar-section::before {
@@ -83,19 +87,65 @@ main {
 }
 
 #calendar {
-  background: url('https://images.unsplash.com/photo-1516979187457-637abb4f9353?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+  width: 100%;
+  max-width: 100%;
+  background: url('https://images.unsplash.com/photo-1555465910-31f7f20a184d?q=80&w=1890&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
   border-radius: 12px;
   padding: 10px;
   max-height: 600px; 
   overflow-y: auto;
+  background-size: cover;  
+  background-position: center;  
+  background-repeat: no-repeat; 
 }
 
 body.dark #calendar {
-  background: #2a2a2a;
+  background: #1f1f45;
+}
+body.dark .fc-daygrid-day-number {
+  color: #f0f0f0;
+}
+body.dark .fc-daygrid-day {
+  background-color: rgba(255, 255, 255, 0.03);
+  color: #ddd;
+}
+
+body.dark .fc-daygrid-day:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+body.dark .fc-day-today {
+  background-color: rgba(243, 156, 18, 0.15) !important;
+  border: 2px solid #f39c12;
+}
+
+body.dark .fc-day-sat .fc-daygrid-day-number,
+body.dark .fc-day-sun .fc-daygrid-day-number {
+  color: #e74c3c !important;
 }
 
 .fc-daygrid-day-number {
   font-weight: bold;
+}
+
+.fc-day-sat .fc-daygrid-day-number,
+.fc-day-sun .fc-daygrid-day-number {
+  color: #e74c3c;
+}
+
+.fc-daygrid-day {
+  background-color: rgba(0, 0, 0, 0.04); /* светло-серый фон ячеек */
+  color: #222; 
+  transition: background-color 0.3s ease;
+}
+
+.fc-day-today {
+  background-color: rgba(5, 30, 47, 0.15) !important; 
+  border: 3px solid var(--secondary-color);
+}
+
+.fc-daygrid-day:hover {
+  background-color: rgba(0, 0, 0, 0.08);
 }
 
 /* Teeman vaihtopainikkeet */
@@ -176,6 +226,19 @@ button:hover {
 .material-item h3 {
   margin-bottom: 10px;
   color: var(--primary-color);
+}
+.delete-btn {
+  background-color: transparent;
+  border: none;
+  color: #e74c3c;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 5px;
+  margin-left: 10px;
+  transition: color 0.3s;
+}
+.delete-btn:hover {
+  color: #c0392b;
 }
 
 /* Alatunniste */
@@ -260,5 +323,6 @@ footer {
     font-size: 1.2rem;
   }
 }
+
 
 
