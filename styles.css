@@ -59,7 +59,7 @@ main {
 
 /* Kalenterin tausta ja blur */
 .calendar-section {
-  background-image: url('https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&w=2073&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+  background-image: url('https://images.unsplash.com/photo-1588420343618-6141b3784bce?q=80&w=2012&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
   background-size: cover;
   background-position: center;
   border-radius: 12px;
@@ -83,7 +83,7 @@ main {
 }
 
 #calendar {
-  background: url('https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&w=2073&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+  background: url('https://images.unsplash.com/photo-1516979187457-637abb4f9353?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
   border-radius: 12px;
   padding: 10px;
   max-height: 600px; 
@@ -186,6 +186,31 @@ footer {
   border-top: 2px solid var(--secondary-color);
 }
 
+/* Motivaatiotoast (oikeassa alakulmassa) */
+#motivational-toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #333; /* oletus jos JS ei toimi */
+  color: white;
+  padding: 15px 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.4s ease;
+  max-width: 300px;
+  z-index: 9999;
+  font-size: 14px;
+  line-height: 1.4;
+  word-wrap: break-word;
+}
+
+#motivational-toast.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 /* Responsiivisuus */
 @media (min-width: 768px) {
   main {
@@ -216,6 +241,8 @@ footer {
   }
 }
 
+
+
 @media (max-width: 500px) {
   main {
     grid-template-columns: 1fr;
@@ -233,4 +260,5 @@ footer {
     font-size: 1.2rem;
   }
 }
+
 
