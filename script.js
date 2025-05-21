@@ -1,4 +1,4 @@
-// Firebase-konfiguraatio (Google/Sähköposti-kirjautuminen)
+//  Firebase ja sisäänkirjautuminen
 const firebaseConfig = {
   apiKey: "AIzaSyAe5ZTG3JEUqQr3QYhd4sEqFsfWyOHaN_A",
   authDomain: "opiskelukaveri-34de5.firebaseapp.com",
@@ -24,11 +24,10 @@ firebase.auth().onAuthStateChanged(user => {
         firebase.auth.EmailAuthProvider.PROVIDER_ID
       ],
       signInSuccessUrl: window.location.href
-    });
+    }, "fi");
   }
 });
-
-// Kalenterin alustus FullCalendar-kirjastolla
+//  FullCalendarin alustus
 let calendar;
 function initCalendar(locale = 'fi') {
   const calendarEl = document.getElementById('calendar');
@@ -37,6 +36,7 @@ function initCalendar(locale = 'fi') {
   calendar = new FullCalendar.Calendar(calendarEl, {
     initialView: 'dayGridMonth',
     locale: locale,
+    aspectRatio: 1.3,
     headerToolbar: {
       left: 'prev,next today',
       center: 'title',
@@ -52,7 +52,7 @@ function initCalendar(locale = 'fi') {
   calendar.render();
 }
 
-// Teeman vaihto (vaalea/tumma)
+//  Teeman vaihto
 document.getElementById("light-mode").addEventListener("click", () => {
   document.body.classList.remove("dark");
 });
@@ -60,7 +60,7 @@ document.getElementById("dark-mode").addEventListener("click", () => {
   document.body.classList.add("dark");
 });
 
-// Kielen vaihto (suomi/englanti)
+//  Kielen vaihto
 document.getElementById("fi").addEventListener("click", () => {
   changeLanguage("fi");
   initCalendar("fi");
@@ -70,7 +70,6 @@ document.getElementById("en").addEventListener("click", () => {
   initCalendar("en");
 });
 
-// Tekstien kääntäminen
 function changeLanguage(lang) {
   document.documentElement.lang = lang;
   const translations = {
@@ -97,7 +96,7 @@ function changeLanguage(lang) {
     el.textContent = translations[lang][key];
   });
 
-  // Päivitä kenttien placeholder-tekstit
+  // Päivitä placeholderit
   if (lang === 'fi') {
     document.getElementById('todo-input').placeholder = 'Lisää uusi tehtävä...';
     document.getElementById('material-title').placeholder = 'Materiaalin otsikko...';
@@ -108,10 +107,202 @@ function changeLanguage(lang) {
     document.getElementById('material-notes').placeholder = 'Notes...';
   }
 
-  loadTodos(); // Päivitä tehtävälista kielen vaihtuessa
+  loadTodos();
+  loadMaterials();
 }
 
-// Tarkistaa deadlinet ja näyttää huomautuksia
+
+// Todo-lista
+
+function loadTodos() {
+  const todos = JSON.parse(localStorage.getItem("todos") || "[]");
+  const list = document.getElementById("todo-list");
+  list.innerHTML = "";
+  const isEnglish = document.documentElement.lang === 'en';
+
+  todos.forEach((todo, index) => {
+    const li = document.createElement("li");
+
+    // Valintaruutu
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.checked = todo.completed;
+    checkbox.addEventListener("change", () => {
+      todos[index].completed = checkbox.checked;
+      localStorage.setItem("todos", JSON.stringify(todos));
+      li.classList.toggle("completed", checkbox.checked);
+      initCalendar();
+    });
+
+    // Tekstielementti (sisältää eräpäivätiedot)
+    const textSpan = document.createElement("span");
+    let dateText = "";
+    if (todo.date) {
+      const now = new Date();
+      const deadline = new Date(todo.date);
+      const timeDiff = deadline - now;
+      const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+      if (isEnglish) {
+        if (daysDiff === 0) dateText = " (today)";
+        else if (daysDiff === 1) dateText = " (tomorrow)";
+        else if (daysDiff > 1) dateText = ` (in ${daysDiff} days)`;
+        else dateText = ` (${Math.abs(daysDiff)} days ago)`;
+      } else {
+        if (daysDiff === 0) dateText = " (tänään)";
+        else if (daysDiff === 1) dateText = " (huomenna)";
+        else if (daysDiff > 1) dateText = ` (${daysDiff} päivän päästä)`;
+        else dateText = ` (${Math.abs(daysDiff)} päivää sitten)`;
+      }
+    }
+    textSpan.textContent = `${todo.text}${todo.date ? ` - ${isEnglish ? 'Deadline' : 'Eräpäivä'}: ${todo.date}${dateText}` : ""}`;
+
+    // Poistonappi
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "×";
+    deleteBtn.className = "delete-btn";
+    deleteBtn.addEventListener("click", () => {
+      todos.splice(index, 1);
+      localStorage.setItem("todos", JSON.stringify(todos));
+      loadTodos();
+      initCalendar();
+    });
+
+    li.appendChild(checkbox);
+    li.appendChild(textSpan);
+    li.appendChild(deleteBtn);
+    if (todo.completed) li.classList.add("completed");
+    list.appendChild(li);
+  });
+}
+
+document.getElementById('todo-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const input = document.getElementById('todo-input');
+  const date = document.getElementById('todo-date');
+  const todo = {
+    text: input.value,
+    date: date.value,
+    completed: false
+  };
+  const todos = JSON.parse(localStorage.getItem("todos") || "[]");
+  todos.push(todo);
+  localStorage.setItem("todos", JSON.stringify(todos));
+  input.value = "";
+  date.value = "";
+  loadTodos();
+  initCalendar();
+
+  if (todo.date) {
+    checkDeadlines();
+  }
+});
+
+
+// Materiaalit
+
+// Lataa tallennetut materiaalit ja renderöi ne
+function loadMaterials() {
+  const materials = JSON.parse(localStorage.getItem("materials") || "[]");
+  const list = document.getElementById("materials-list");
+  list.innerHTML = "";
+
+  materials.forEach(material => {
+    renderMaterial(material);
+  });
+}
+
+// Renderöi yhden materiaalikortin
+function renderMaterial(material) {
+  const list = document.getElementById("materials-list");
+
+  const materialEl = document.createElement('div');
+  materialEl.className = 'material-item';
+  materialEl.dataset.id = material.id;
+
+  const titleEl = document.createElement('h3');
+  titleEl.textContent = material.title;
+
+  const dateEl = document.createElement('p');
+  dateEl.textContent = new Date(material.date).toLocaleDateString(
+    document.documentElement.lang === 'en' ? 'en-US' : 'fi-FI'
+  );
+  dateEl.style.fontSize = '0.8em';
+  dateEl.style.color = '#666';
+
+  const notesEl = document.createElement('p');
+  notesEl.textContent = material.notes;
+
+  materialEl.appendChild(titleEl);
+  materialEl.appendChild(dateEl);
+  materialEl.appendChild(notesEl);
+
+  if (material.link) {
+    const linkEl = document.createElement('a');
+    linkEl.href = material.link;
+    linkEl.textContent = material.link;
+    linkEl.target = '_blank';
+    linkEl.style.display = 'block';
+    linkEl.style.marginTop = '8px';
+    linkEl.style.color = '#3498db';
+    materialEl.appendChild(linkEl);
+  }
+
+  const deleteBtn = document.createElement('button');
+  deleteBtn.textContent = '×';
+  deleteBtn.className = 'delete-btn'; 
+  deleteBtn.title = document.documentElement.lang === "en" ? "Delete material" : "Poista materiaali";
+  deleteBtn.style.marginTop = '10px';
+  deleteBtn.style.background = 'transparent';
+  deleteBtn.style.border = 'none';
+  deleteBtn.style.color = '#e74c3c';
+  deleteBtn.style.cursor = 'pointer';
+
+  deleteBtn.addEventListener('click', () => {
+    deleteMaterial(material.id);
+  });
+
+  materialEl.appendChild(deleteBtn);
+  list.appendChild(materialEl);
+}
+
+// Poistaa materiaalin id:n perusteella
+function deleteMaterial(id) {
+  let materials = JSON.parse(localStorage.getItem("materials") || "[]");
+  materials = materials.filter(m => m.id !== id);
+  localStorage.setItem("materials", JSON.stringify(materials));
+  loadMaterials();
+}
+
+// Käsittelijä materiaalien lisäämiseen lomakkeelta
+document.getElementById('material-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const titleInput = document.getElementById('material-title');
+  const linkInput = document.getElementById('material-link');
+  const notesInput = document.getElementById('material-notes');
+
+  const material = {
+    id: Date.now(),
+    title: titleInput.value.trim(),
+    link: linkInput.value.trim(),
+    notes: notesInput.value.trim(),
+    date: new Date().toISOString()
+  };
+
+  const materials = JSON.parse(localStorage.getItem("materials") || "[]");
+  materials.push(material);
+  localStorage.setItem("materials", JSON.stringify(materials));
+
+  titleInput.value = "";
+  linkInput.value = "";
+  notesInput.value = "";
+
+  loadMaterials();
+});
+
+
+// Deadlinet ja ilmoitukset
+
 function checkDeadlines() {
   const todos = JSON.parse(localStorage.getItem("todos") || "[]");
   const now = new Date();
@@ -141,7 +332,6 @@ function checkDeadlines() {
   });
 }
 
-// Näyttää selainilmoituksen
 function showNotification(message) {
   if (!("Notification" in window)) {
     alert(message);
@@ -159,103 +349,10 @@ function showNotification(message) {
   }
 }
 
-// Tehtävien lisääminen
-document.getElementById('todo-form').addEventListener('submit', function(e) {
-  e.preventDefault();
-  const input = document.getElementById('todo-input');
-  const date = document.getElementById('todo-date');
-  const todo = {
-    text: input.value,
-    date: date.value,
-    completed: false
-  };
-  const todos = JSON.parse(localStorage.getItem("todos") || "[]");
-  todos.push(todo);
-  localStorage.setItem("todos", JSON.stringify(todos));
-  input.value = "";
-  date.value = "";
-  loadTodos();
-  initCalendar();
-
-  if (todo.date) {
-    checkDeadlines();
-  }
-});
-
-// Näyttää tallennetut tehtävät
-function loadTodos() {
-  const todos = JSON.parse(localStorage.getItem("todos") || "[]");
-  const list = document.getElementById("todo-list");
-  list.innerHTML = "";
-  const isEnglish = document.documentElement.lang === 'en';
-
-  todos.forEach((todo, index) => {
-    const li = document.createElement("li");
-
-    // Valintaruutu
-    const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
-    checkbox.checked = todo.completed;
-    checkbox.addEventListener("change", () => {
-      todos[index].completed = checkbox.checked;
-      localStorage.setItem("todos", JSON.stringify(todos));
-      li.classList.toggle("completed", checkbox.checked);
-      initCalendar();
-    });
-
-    // Teksti deadlinetiedoilla
-    const textSpan = document.createElement("span");
-    let dateText = "";
-    if (todo.date) {
-      const now = new Date();
-      const deadline = new Date(todo.date);
-      const timeDiff = deadline - now;
-      const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-
-      if (isEnglish) {
-        if (daysDiff === 0) dateText = " (today)";
-        else if (daysDiff === 1) dateText = " (tomorrow)";
-        else if (daysDiff > 1) dateText = ` (in ${daysDiff} days)`;
-        else dateText = ` (${Math.abs(daysDiff)} days ago)`;
-      } else {
-        if (daysDiff === 0) dateText = " (tänään)";
-        else if (daysDiff === 1) dateText = " (huomenna)";
-        else if (daysDiff > 1) dateText = ` (${daysDiff} päivän päästä)`;
-        else dateText = ` (${Math.abs(daysDiff)} päivää sitten)`;
-      }
-    }
-    textSpan.textContent = `${todo.text}${todo.date ? ` - ${isEnglish ? 'Deadline' : 'Eräpäivä'}: ${todo.date}${dateText}` : ""}`;
-
-    // Poistopainike
-    const deleteBtn = document.createElement("button");
-    deleteBtn.textContent = "×";
-    deleteBtn.className = "delete-btn";
-    deleteBtn.addEventListener("click", () => {
-      todos.splice(index, 1);
-      localStorage.setItem("todos", JSON.stringify(todos));
-      loadTodos();
-      initCalendar();
-    });
-
-    li.appendChild(checkbox);
-    li.appendChild(textSpan);
-    li.appendChild(deleteBtn);
-    if (todo.completed) li.classList.add("completed");
-    list.appendChild(li);
-  });
-}
-
-// Alustetaan sivu ladatessa
-document.addEventListener("DOMContentLoaded", () => {
-  initCalendar("fi");
-  loadTodos();
-  checkDeadlines();
-  setInterval(checkDeadlines, 3600000); // Tarkistaa deadlinet tunnin välein
-  startMotivationToasts();            // Käynnistää motivaatiotoastit
-});
 
 // Motivaatiolainaukset
-// Lainausmatriisit suomeksi ja englanniksi
+
+
 const motivationQuotes = {
   fi: [
     "Muisti on voimakas. Käytä sitä.",
@@ -290,24 +387,20 @@ const motivationQuotes = {
   ]
 };
 
-// Luo motivaatiotoast-elementti ja lisää DOM:iin
 const toast = document.createElement('div');
 toast.id = 'motivational-toast';
 document.body.appendChild(toast);
 
-// Käynnistä motivaatiotoast-toiminto
 function startMotivationToasts() {
-  showMotivationalToast();              // näytä heti ensimmäinen
-  setInterval(showMotivationalToast, 30 * 60 * 1000); // 30 min välein
+  showMotivationalToast();
+  setInterval(showMotivationalToast, 30 * 60 * 1000);
 }
 
-// Näyttää motivaatiolainauksen oikealla kielellä, satunnaisvärillä
 function showMotivationalToast() {
   const lang = document.documentElement.lang === "en" ? "en" : "fi";
   const quotes = motivationQuotes[lang];
   const quote = quotes[Math.floor(Math.random() * quotes.length)];
 
-  // Määritä satunnainen taustaväri toastille
   const colors = [
     "#2c3e50", "#8e44ad", "#16a085", "#2980b9",
     "#d35400", "#c0392b", "#27ae60", "#34495e",
@@ -320,6 +413,17 @@ function showMotivationalToast() {
   toast.style.color = "#fff";
   toast.classList.add('visible');
 
-  // Poista näkyvyys 10 sekunnin kuluttua
   setTimeout(() => toast.classList.remove('visible'), 10000);
 }
+
+// DOMContentLoaded: kutsut
+
+document.addEventListener("DOMContentLoaded", () => {
+  initCalendar("fi");
+  loadTodos();
+  loadMaterials();
+  checkDeadlines();
+  setInterval(checkDeadlines, 3600000);
+  startMotivationToasts();
+});
+
