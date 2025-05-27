@@ -316,11 +316,37 @@ footer {
     top: 5px;
     right: 5px;
   }
+
+@media (max-width: 540px) {
+  main {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .theme-toggle {
+    flex-direction: column;
+    top: 5px;
+    right: 5px;
+  }
+
   h1 {
     font-size: 1.5rem;
   }
+
   h2 {
     font-size: 1.2rem;
+  }
+
+  .fc-header-toolbar.fc-toolbar.fc-toolbar-ltr {
+    flex-direction: column;
+  }
+
+  #fc-dom-1 {
+    font-size: 22px;
+  }
+
+  .fc-toolbar-chunk {
+    padding: 2px 0;
   }
 }
 
